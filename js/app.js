@@ -40,7 +40,7 @@ const resetBtn = document.getElementById("btn-reset");
 /*----------------------------- event listeners -----------------------------*/
 dealBtn.addEventListener("click", (event) => {
   console.log("Deal button clicked:", event);
-  //handleDeal();
+  handleDeal();
 });
 
 /*-------------------------------- functions --------------------------------*/
@@ -110,7 +110,69 @@ const init = () => {
   dealBtn.disabled = false;
   hitBtn.disabled = true;
   standBtn.disabled = true;
-  //render();
+  render();
+};
+
+const render = () => {
+  playerTotalEl.textContent = `Total: ${playerTotal}`;
+  dealerTotalEl.textContent = `Total: ${dealerTotal}`;
+
+  // Status message
+  messageEl.textContent = message;
+
+  // Remaining cards in the deck
+  deckEl.textContent = deck.length;
+
+  // Player hand
+  playerHandEl.innerHTML = "";
+  playerHand.forEach((card) => {
+    const cardEl = document.createElement("div");
+    cardEl.classList.add("card", "large");
+    cardEl.classList.add(card); // "dA", "h10"...
+    playerHandEl.appendChild(cardEl);
+  });
+
+  dealerHandEl.innerHTML = "";
+  dealerHand.forEach((card) => {
+    const cardEl = document.createElement("div");
+    cardEl.classList.add("card", "large");
+    cardEl.classList.add(card);
+    dealerHandEl.appendChild(cardEl);
+  });
+};
+
+const drawRandomCard = () => {
+  if (deck.length === 0) {
+    console.warn("[DRAW] No cards left in deck!");
+    return null;
+  }
+
+  const randomIdx = Math.floor(Math.random() * deck.length);
+  const cardPicked = deck.splice(randomIdx, 1)[0];
+  console.log("[DRAW] Card picked:", cardPicked);
+  return cardPicked;
+};
+
+const handleDeal = () => {
+  if (outcome !== "idle") return;
+
+  turn = "player";
+  outcome = "playing";
+  message = textMessage.playerTurn;
+
+  const card1 = drawRandomCard();
+  if (card1) {
+    playerHand.push(card1);
+  }
+  const card2 = drawRandomCard();
+  if (card2) {
+    playerHand.push(card2);
+  }
+  hitBtn.disabled = false;
+  dealBtn.disabled = true;
+  standBtn.disabled = false;
+
+  render();
 };
 /*--------------------------------- Start -----------------------------------*/
 init();
