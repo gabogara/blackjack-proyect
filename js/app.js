@@ -3,6 +3,7 @@ const textMessage = {
   start: "Press deal to start.",
   playerTurn: "Your turn: hit or stand.",
   bust: "Bust!",
+  bustPlayer: "Player Bust, Dealer win",
   dealerTurn: "Dealer turn",
   push: "Push.",
   playerWins: "You win!",
@@ -136,31 +137,48 @@ const init = () => {
 };
 
 const render = () => {
+  // Status + totals
+  messageEl.textContent = message;
+  deckTotalEl.textContent = deck.length;
   playerTotalEl.textContent = `Total: ${playerTotal}`;
   dealerTotalEl.textContent = `Total: ${dealerTotal}`;
-
-  // Status message
-  messageEl.textContent = message;
-
-  // Remaining cards in the deck
-  deckTotalEl.textContent = deck.length;
 
   // Player hand
   playerHandEl.innerHTML = "";
   playerHand.forEach((card) => {
     const cardEl = document.createElement("div");
-    cardEl.classList.add("card", "large");
-    cardEl.classList.add(card); // "dA", "h10"...
+    cardEl.classList.add("card", "large", card);
     playerHandEl.appendChild(cardEl);
   });
 
   dealerHandEl.innerHTML = "";
-  dealerHand.forEach((card) => {
-    const cardEl = document.createElement("div");
-    cardEl.classList.add("card", "large");
-    cardEl.classList.add(card);
-    dealerHandEl.appendChild(cardEl);
-  });
+
+  if (outcome === "playing" && turn === "player") {
+    // Show only 1 card + back
+    if (dealerHand.length > 0) {
+      const firstCardEl = document.createElement("div");
+      firstCardEl.classList.add("card", "large", dealerHand[0]);
+      dealerHandEl.appendChild(firstCardEl);
+
+      if (dealerHand.length > 1) {
+        const hiddenCard = document.createElement("div");
+        hiddenCard.classList.add("card", "large", "back");
+        dealerHandEl.appendChild(hiddenCard);
+      }
+    }
+  } else if (
+    outcome === "player win" ||
+    outcome === "dealer win" ||
+    outcome === "push" ||
+    outcome === "bust"
+  ) {
+    // show all cards
+    dealerHand.forEach((card) => {
+      const cardEl = document.createElement("div");
+      cardEl.classList.add("card", "large", card);
+      dealerHandEl.appendChild(cardEl);
+    });
+  }
 };
 
 const checkWinner = () => {
@@ -224,7 +242,6 @@ const handleStand = () => {
   standBtn.disabled = true;
   message = textMessage.dealerTurn;
   handleDealerTurn();
-  render();
 };
 
 const handleDeal = () => {
@@ -244,6 +261,17 @@ const handleDeal = () => {
   }
   playerTotal = getHandTotal(playerHand);
   console.log("[TOTAL] Player hand total:", playerTotal);
+
+  //dealer Deal
+  const card3 = drawRandomCard();
+  if (card3) {
+    dealerHand.push(card3);
+  }
+  const card4 = drawRandomCard();
+  if (card4) {
+    dealerHand.push(card4);
+  }
+  dealerTotal = getHandTotal(dealerHand);
   hitBtn.disabled = false;
   dealBtn.disabled = true;
   standBtn.disabled = false;
@@ -252,12 +280,7 @@ const handleDeal = () => {
 };
 
 const handleDealerTurn = () => {
-  outcome = "playing";
-
-  const card1 = drawRandomCard();
-  if (card1) {
-    dealerHand.push(card1);
-  }
+  if (outcome !== "playing" || turn !== "dealer") return;
 
   while (dealerTotal < 17) {
     const card = drawRandomCard();
