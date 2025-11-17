@@ -1,3 +1,4 @@
+/*-------------------------------- constants --------------------------------*/
 const textMessage = {
   start: "press deal to start.",
   playerTurn: "your turn: hit or stand.",
@@ -9,6 +10,7 @@ const textMessage = {
   dealerBlackjack: "dealer has blackjack.",
   playerBlackjack: "blackjack! you win.",
 };
+
 /*-------------------------------- variables --------------------------------*/
 let deck = [];
 let playerHand = [];
@@ -21,9 +23,11 @@ let turn = "none";
 
 // 'idle', 'playing', 'player win', 'dealer win', 'push', 'bust'
 let outcome = "idle";
+
 let message = textMessage.start;
+
 /*------------------------ cached element references ------------------------*/
-// Displays
+
 const deckEl = document.getElementById("deck");
 const playerTotalEl = document.getElementById("player-total");
 const dealerTotalEl = document.getElementById("dealer-total");
@@ -31,16 +35,34 @@ const messageEl = document.getElementById("message");
 
 const playerHandEl = document.getElementById("player-hand");
 const dealerHandEl = document.getElementById("dealer-hand");
-//BTN
+
 const dealBtn = document.getElementById("btn-deal");
 const hitBtn = document.getElementById("btn-hit");
 const standBtn = document.getElementById("btn-stand");
 const resetBtn = document.getElementById("btn-reset");
 
 /*----------------------------- event listeners -----------------------------*/
+
+// Deal
 dealBtn.addEventListener("click", (event) => {
   console.log("Deal button clicked:", event);
   handleDeal();
+});
+// Hit
+hitBtn.addEventListener("click", (event) => {
+  console.log("hit button clicked:", event);
+  handleHit();
+});
+
+standBtn.addEventListener("click", (event) => {
+  console.log("Stand button clicked:", event);
+  handleStand();
+});
+
+// Reset
+resetBtn.addEventListener("click", (event) => {
+  console.log("Reset button clicked:", event);
+  init();
 });
 
 /*-------------------------------- functions --------------------------------*/
@@ -153,6 +175,37 @@ const drawRandomCard = () => {
   return cardPicked;
 };
 
+const checkBust = (points) => {
+  return points > 21;
+};
+
+const getHandTotal = (hand) => {
+  let total = 0;
+  hand.forEach((card) => {
+    const value = card.slice(1);
+    if (value === "A") {
+      total += 11;
+    } else if (value === "K" || value === "Q" || value === "J") {
+      total += 10;
+    } else {
+      total = total + parseInt(value);
+    }
+  });
+
+  return total;
+};
+
+const handleStand = () => {
+  if (outcome !== "playing" || turn !== "player") return;
+  turn = "dealer";
+  dealBtn.disabled = true;
+  hitBtn.disabled = true;
+  standBtn.disabled = true;
+  message = textMessage.dealerTurn;
+  handleDealerTurn();
+  render();
+};
+
 const handleDeal = () => {
   if (outcome !== "idle") return;
 
@@ -168,11 +221,55 @@ const handleDeal = () => {
   if (card2) {
     playerHand.push(card2);
   }
+  playerTotal = getHandTotal(playerHand);
+  console.log("[TOTAL] Player hand total:", playerTotal);
   hitBtn.disabled = false;
   dealBtn.disabled = true;
   standBtn.disabled = false;
 
   render();
 };
+
+const handleDealerTurn = () => {
+  if (turn !== "dealer") return;
+
+  const card1 = drawRandomCard();
+  if (card1) {
+    dealerHand.push(card1);
+  }
+  const card2 = drawRandomCard();
+  if (card2) {
+    dealerHand.push(card2);
+  }
+  dealerTotal = getHandTotal(dealerHand);
+  const bustDealer = checkBust(dealerHand);
+  if (bustDealer) {
+    outcome = "player win";
+    message = textMessage.playerWins;
+  } else {
+  }
+};
+
+const handleHit = () => {
+  if (outcome !== "playing") return;
+  const card = drawRandomCard();
+  if (card) {
+    playerHand.push(card);
+  }
+  playerTotal = getHandTotal(playerHand);
+  const bustPlayer = checkBust(playerTotal);
+  if (bustPlayer) {
+    outcome = "bust";
+    turn = "none";
+    message = textMessage.dealerWins;
+    standBtn.disabled = true;
+    hitBtn.disabled = true;
+  } else {
+    message = textMessage.playerTurn;
+  }
+
+  render();
+};
+
 /*--------------------------------- Start -----------------------------------*/
 init();
