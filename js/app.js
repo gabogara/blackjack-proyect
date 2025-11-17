@@ -1,14 +1,14 @@
 /*-------------------------------- constants --------------------------------*/
 const textMessage = {
-  start: "press deal to start.",
-  playerTurn: "your turn: hit or stand.",
-  bust: "bust!",
-  dealerTurn: "dealer turn",
-  push: "push.",
-  playerWins: "you win!",
-  dealerWins: "dealer wins.",
-  dealerBlackjack: "dealer has blackjack.",
-  playerBlackjack: "blackjack! you win.",
+  start: "Press deal to start.",
+  playerTurn: "Your turn: hit or stand.",
+  bust: "Bust!",
+  dealerTurn: "Dealer turn",
+  push: "Push.",
+  playerWins: "You win!",
+  dealerWins: "Dealer wins.",
+  dealerBlackjack: "Dealer has Blackjack.",
+  playerBlackjack: "Blackjack! you win.",
 };
 
 /*-------------------------------- variables --------------------------------*/
@@ -28,7 +28,7 @@ let message = textMessage.start;
 
 /*------------------------ cached element references ------------------------*/
 
-const deckEl = document.getElementById("deck");
+const deckTotalEl = document.getElementById("deck-total");
 const playerTotalEl = document.getElementById("player-total");
 const dealerTotalEl = document.getElementById("dealer-total");
 const messageEl = document.getElementById("message");
@@ -143,7 +143,7 @@ const render = () => {
   messageEl.textContent = message;
 
   // Remaining cards in the deck
-  deckEl.textContent = deck.length;
+  deckTotalEl.textContent = deck.length;
 
   // Player hand
   playerHandEl.innerHTML = "";
@@ -163,6 +163,27 @@ const render = () => {
   });
 };
 
+const checkWinner = () => {
+  if (outcome !== "playing") return;
+
+  if (playerTotal > dealerTotal) {
+    outcome = "player win";
+    message = textMessage.playerWins;
+  } else if (dealerTotal > playerTotal) {
+    outcome = "dealer win";
+    message = textMessage.dealerWins;
+  } else {
+    outcome = "push";
+    message = textMessage.push;
+  }
+};
+const endRound = () => {
+  turn = "none";
+  hitBtn.disabled = true;
+  standBtn.disabled = true;
+  dealBtn.disabled = false;
+  render();
+};
 const drawRandomCard = () => {
   if (deck.length === 0) {
     console.warn("[DRAW] No cards left in deck!");
@@ -231,23 +252,28 @@ const handleDeal = () => {
 };
 
 const handleDealerTurn = () => {
-  if (turn !== "dealer") return;
+  outcome = "playing";
 
   const card1 = drawRandomCard();
   if (card1) {
     dealerHand.push(card1);
   }
-  const card2 = drawRandomCard();
-  if (card2) {
-    dealerHand.push(card2);
+
+  while (dealerTotal < 17) {
+    const card = drawRandomCard();
+    if (card) {
+      dealerHand.push(card);
+    }
+    dealerTotal = getHandTotal(dealerHand);
   }
-  dealerTotal = getHandTotal(dealerHand);
-  const bustDealer = checkBust(dealerHand);
+  const bustDealer = checkBust(dealerTotal);
   if (bustDealer) {
     outcome = "player win";
     message = textMessage.playerWins;
   } else {
+    checkWinner();
   }
+  endRound();
 };
 
 const handleHit = () => {
