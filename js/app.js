@@ -2,7 +2,7 @@
 const textMessage = {
   start: "Press deal to start.",
   playerTurn: "Your turn: hit or stand.",
-  bust: "Bust!",
+  bustDealer: "Dealer Bust, Player win!",
   bustPlayer: "Player Bust, Dealer win",
   dealerTurn: "Dealer turn",
   push: "Push.",
@@ -346,10 +346,10 @@ const handleDealerTurn = () => {
     }
     dealerTotal = getHandTotal(dealerHand);
   }
-  const bustDealer = checkBust(dealerTotal);
-  if (bustDealer) {
+  const bustDealers = checkBust(dealerTotal);
+  if (bustDealers) {
     outcome = "player win";
-    message = textMessage.playerWins;
+    message = textMessage.bustDealer;
   } else {
     checkWinner();
   }
@@ -363,10 +363,10 @@ const handleHit = () => {
     playerHand.push(card);
   }
   playerTotal = getHandTotal(playerHand);
-  const bustPlayer = checkBust(playerTotal);
-  if (bustPlayer) {
-    outcome = "bust";
-    message = textMessage.dealerWins;
+  const bustPlayers = checkBust(playerTotal);
+  if (bustPlayers) {
+    outcome = "dealer win";
+    message = textMessage.bustPlayer;
     endRound();
   } else {
     message = textMessage.playerTurn;
