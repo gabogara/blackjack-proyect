@@ -141,8 +141,6 @@ const render = () => {
   messageEl.textContent = message;
   deckTotalEl.textContent = deck.length;
   playerTotalEl.textContent = `Total: ${playerTotal}`;
-  dealerTotalEl.textContent = `Total: ${dealerTotal}`;
-
   // Player hand
   playerHandEl.innerHTML = "";
   playerHand.forEach((card) => {
@@ -156,11 +154,14 @@ const render = () => {
   if (outcome === "playing" && turn === "player") {
     // Show only 1 card + back
     if (dealerHand.length > 0) {
-      const firstCardEl = document.createElement("div");
+      let firstCardEl = document.createElement("div");
       firstCardEl.classList.add("card", "large", dealerHand[0]);
       dealerHandEl.appendChild(firstCardEl);
 
       if (dealerHand.length > 1) {
+        let FirstCard = dealerHand.slice(0, 1);
+        const dealerFirstValue = getHandTotal(FirstCard);
+        dealerTotalEl.textContent = `Total: ${dealerFirstValue}`;
         const hiddenCard = document.createElement("div");
         hiddenCard.classList.add("card", "large", "back");
         dealerHandEl.appendChild(hiddenCard);
@@ -168,6 +169,7 @@ const render = () => {
     }
   } else if (outcome !== "playing" || turn !== "player") {
     // show all cards
+    dealerTotalEl.textContent = `Total: ${dealerTotal}`;
     dealerHand.forEach((card) => {
       const cardEl = document.createElement("div");
       cardEl.classList.add("card", "large", card);
