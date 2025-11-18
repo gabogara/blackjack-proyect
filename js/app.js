@@ -166,12 +166,7 @@ const render = () => {
         dealerHandEl.appendChild(hiddenCard);
       }
     }
-  } else if (
-    outcome === "player win" ||
-    outcome === "dealer win" ||
-    outcome === "push" ||
-    outcome === "bust"
-  ) {
+  } else if (outcome !== "playing" || turn !== "player") {
     // show all cards
     dealerHand.forEach((card) => {
       const cardEl = document.createElement("div");
@@ -195,19 +190,82 @@ const checkWinner = () => {
     message = textMessage.push;
   }
 };
+
 const endRound = () => {
   turn = "none";
   hitBtn.disabled = true;
   standBtn.disabled = true;
   dealBtn.disabled = false;
+  outcome = "idle";
   render();
 };
+
+const reStartDeck = () => {
+  playerHand = [];
+  dealerHand = [];
+  playerTotal = 0;
+  dealerTotal = 0;
+  deck = [
+    "dA",
+    "dQ",
+    "dK",
+    "dJ",
+    "d10",
+    "d09",
+    "d08",
+    "d07",
+    "d06",
+    "d05",
+    "d04",
+    "d03",
+    "d02",
+    "hA",
+    "hQ",
+    "hK",
+    "hJ",
+    "h10",
+    "h09",
+    "h08",
+    "h07",
+    "h06",
+    "h05",
+    "h04",
+    "h03",
+    "h02",
+    "cA",
+    "cQ",
+    "cK",
+    "cJ",
+    "c10",
+    "c09",
+    "c08",
+    "c07",
+    "c06",
+    "c05",
+    "c04",
+    "c03",
+    "c02",
+    "sA",
+    "sQ",
+    "sK",
+    "sJ",
+    "s10",
+    "s09",
+    "s08",
+    "s07",
+    "s06",
+    "s05",
+    "s04",
+    "s03",
+    "s02",
+  ];
+};
+
 const drawRandomCard = () => {
   if (deck.length === 0) {
     console.warn("[DRAW] No cards left in deck!");
     return null;
   }
-
   const randomIdx = Math.floor(Math.random() * deck.length);
   const cardPicked = deck.splice(randomIdx, 1)[0];
   console.log("[DRAW] Card picked:", cardPicked);
@@ -230,7 +288,6 @@ const getHandTotal = (hand) => {
       total = total + parseInt(value);
     }
   });
-
   return total;
 };
 
@@ -246,7 +303,7 @@ const handleStand = () => {
 
 const handleDeal = () => {
   if (outcome !== "idle") return;
-
+  reStartDeck();
   turn = "player";
   outcome = "playing";
   message = textMessage.playerTurn;
@@ -309,15 +366,12 @@ const handleHit = () => {
   const bustPlayer = checkBust(playerTotal);
   if (bustPlayer) {
     outcome = "bust";
-    turn = "none";
     message = textMessage.dealerWins;
-    standBtn.disabled = true;
-    hitBtn.disabled = true;
+    endRound();
   } else {
     message = textMessage.playerTurn;
+    render();
   }
-
-  render();
 };
 
 /*--------------------------------- Start -----------------------------------*/
