@@ -1,15 +1,16 @@
 /*-------------------------------- constants --------------------------------*/
 const textMessage = {
   start: "Press deal to start.",
-  playerTurn: "Your turn: hit or stand.",
-  bustDealer: "Dealer Bust, Player win!",
-  bustPlayer: "Player Bust, Dealer win",
-  dealerTurn: "Dealer turn",
-  push: "Push.",
+  playerTurn: "Your turn: Hit or Stand.",
+  bustDealer: "Dealer busts. Player wins!",
+  bustPlayer: "Player busts. Dealer wins.",
+  dealerTurn: "Dealer's turn.",
+  push: "Push. It's a tie.",
   playerWins: "You win!",
   dealerWins: "Dealer wins.",
-  dealerBlackjack: "Dealer has Blackjack.",
-  playerBlackjack: "Blackjack! you win.",
+  pushBlackJack: "Push. Both have blackjack.",
+  dealerBlackjack: "Dealer has blackjack. You lose!",
+  playerBlackjack: "Blackjack! You win.",
 };
 
 /*-------------------------------- variables --------------------------------*/
@@ -125,7 +126,8 @@ const init = () => {
     "s03",
     "s02",
   ];
-
+  blackjackPlayer = false;
+  blackjackDealer = false;
   playerCards = [];
   dealerCards = [];
   playerTotal = 0;
@@ -140,11 +142,10 @@ const init = () => {
 };
 
 const render = () => {
-  // Status + totals
   messageEl.textContent = message;
   deckTotalEl.textContent = deckCards.length;
   playerTotalEl.textContent = `Total: ${playerTotal}`;
-  // Player hand
+
   playerHandEl.innerHTML = "";
   playerCards.forEach((card) => {
     const cardEl = document.createElement("div");
@@ -155,7 +156,6 @@ const render = () => {
   dealerHandEl.innerHTML = "";
 
   if (outcome === "playing" && turn === "player") {
-    // Show only 1 card + back
     if (dealerCards.length > 0) {
       let firstCardEl = document.createElement("div");
       firstCardEl.classList.add("card", "large", dealerCards[0]);
@@ -171,13 +171,22 @@ const render = () => {
       }
     }
   } else if (outcome !== "playing" || turn !== "player") {
-    // show all cards
     dealerTotalEl.textContent = `Total: ${dealerTotal}`;
     dealerCards.forEach((card) => {
       const cardEl = document.createElement("div");
       cardEl.classList.add("card", "large", card);
       dealerHandEl.appendChild(cardEl);
     });
+  }
+};
+
+const checkBlackJack = (handCards) => {
+  if (handCards.length !== 2) {
+    return false;
+  } else if (handCards.length === 2 && getHandTotal(handCards) === 21) {
+    return true;
+  } else {
+    return false;
   }
 };
 
@@ -210,6 +219,8 @@ const reStartDeck = () => {
   dealerCards = [];
   playerTotal = 0;
   dealerTotal = 0;
+  blackjackPlayer = false;
+  blackjackDealer = false;
   deckCards = [
     "dA",
     "dQ",
@@ -330,6 +341,7 @@ const handleDeal = () => {
 
   playerTotal = getHandTotal(playerCards);
   console.log("[TOTAL] Player hand total:", playerTotal);
+  blackjackPlayer = checkBlackJack(playerCards);
 
   const card3 = drawRandomCard();
   if (card3) {
@@ -340,10 +352,27 @@ const handleDeal = () => {
     dealerCards.push(card4);
   }
   dealerTotal = getHandTotal(dealerCards);
-  hitBtn.disabled = false;
-  dealBtn.disabled = true;
-  standBtn.disabled = false;
-
+  blackjackDealer = checkBlackJack(dealerCards);
+  if (blackjackDealer) {
+    if (blackjackPlayer) {
+      outcome = "bust";
+      message = textMessage.pushBlackJack;
+      endRound();
+    } else {
+      outcome = "dealer win";
+      message = textMessage.dealerBlackjack;
+      endRound();
+    }
+  } else if (blackjackPlayer) {
+    message = textMessage.playerBlackjack;
+    outcome = "player win";
+    endRound();
+  }
+  if (!blackjackDealer && !blackjackPlayer) {
+    hitBtn.disabled = false;
+    dealBtn.disabled = true;
+    standBtn.disabled = false;
+  }
   render();
 };
 
