@@ -13,9 +13,9 @@ const textMessage = {
 };
 
 /*-------------------------------- variables --------------------------------*/
-let deck = [];
-let playerHand = [];
-let dealerHand = [];
+let deckCards = [];
+let playerCards = [];
+let dealerCards = [];
 let playerTotal = 0;
 let dealerTotal = 0;
 
@@ -24,6 +24,9 @@ let turn = "none";
 
 // 'idle', 'playing', 'player win', 'dealer win', 'push', 'bust'
 let outcome = "idle";
+
+let blackjackPlayer = false;
+let blackjackDealer = false;
 
 let message = textMessage.start;
 
@@ -54,7 +57,7 @@ hitBtn.addEventListener("click", (event) => {
   console.log("hit button clicked:", event);
   handleHit();
 });
-
+// stand
 standBtn.addEventListener("click", (event) => {
   console.log("Stand button clicked:", event);
   handleStand();
@@ -68,7 +71,7 @@ resetBtn.addEventListener("click", (event) => {
 
 /*-------------------------------- functions --------------------------------*/
 const init = () => {
-  deck = [
+  deckCards = [
     "dA",
     "dQ",
     "dK",
@@ -123,8 +126,8 @@ const init = () => {
     "s02",
   ];
 
-  playerHand = [];
-  dealerHand = [];
+  playerCards = [];
+  dealerCards = [];
   playerTotal = 0;
   dealerTotal = 0;
   turn = "none";
@@ -139,11 +142,11 @@ const init = () => {
 const render = () => {
   // Status + totals
   messageEl.textContent = message;
-  deckTotalEl.textContent = deck.length;
+  deckTotalEl.textContent = deckCards.length;
   playerTotalEl.textContent = `Total: ${playerTotal}`;
   // Player hand
   playerHandEl.innerHTML = "";
-  playerHand.forEach((card) => {
+  playerCards.forEach((card) => {
     const cardEl = document.createElement("div");
     cardEl.classList.add("card", "large", card);
     playerHandEl.appendChild(cardEl);
@@ -153,14 +156,14 @@ const render = () => {
 
   if (outcome === "playing" && turn === "player") {
     // Show only 1 card + back
-    if (dealerHand.length > 0) {
+    if (dealerCards.length > 0) {
       let firstCardEl = document.createElement("div");
-      firstCardEl.classList.add("card", "large", dealerHand[0]);
+      firstCardEl.classList.add("card", "large", dealerCards[0]);
       dealerHandEl.appendChild(firstCardEl);
 
-      if (dealerHand.length > 1) {
-        let FirstCard = dealerHand.slice(0, 1);
-        const dealerFirstValue = getHandTotal(FirstCard);
+      if (dealerCards.length > 1) {
+        const firstCard = dealerCards.slice(0, 1);
+        const dealerFirstValue = getHandTotal(firstCard);
         dealerTotalEl.textContent = `Total: ${dealerFirstValue}`;
         const hiddenCard = document.createElement("div");
         hiddenCard.classList.add("card", "large", "back");
@@ -170,7 +173,7 @@ const render = () => {
   } else if (outcome !== "playing" || turn !== "player") {
     // show all cards
     dealerTotalEl.textContent = `Total: ${dealerTotal}`;
-    dealerHand.forEach((card) => {
+    dealerCards.forEach((card) => {
       const cardEl = document.createElement("div");
       cardEl.classList.add("card", "large", card);
       dealerHandEl.appendChild(cardEl);
@@ -203,11 +206,11 @@ const endRound = () => {
 };
 
 const reStartDeck = () => {
-  playerHand = [];
-  dealerHand = [];
+  playerCards = [];
+  dealerCards = [];
   playerTotal = 0;
   dealerTotal = 0;
-  deck = [
+  deckCards = [
     "dA",
     "dQ",
     "dK",
@@ -264,12 +267,12 @@ const reStartDeck = () => {
 };
 
 const drawRandomCard = () => {
-  if (deck.length === 0) {
+  if (deckCards.length === 0) {
     console.warn("[DRAW] No cards left in deck!");
     return null;
   }
-  const randomIdx = Math.floor(Math.random() * deck.length);
-  const cardPicked = deck.splice(randomIdx, 1)[0];
+  const randomIdx = Math.floor(Math.random() * deckCards.length);
+  const cardPicked = deckCards.splice(randomIdx, 1)[0];
   console.log("[DRAW] Card picked:", cardPicked);
   return cardPicked;
 };
@@ -278,18 +281,24 @@ const checkBust = (points) => {
   return points > 21;
 };
 
-const getHandTotal = (hand) => {
+const getHandTotal = (handCards) => {
   let total = 0;
-  hand.forEach((card) => {
+  let aces = 0;
+  handCards.forEach((card) => {
     const value = card.slice(1);
     if (value === "A") {
-      total += 11;
+      aces = aces + 1;
+      total = total + 11;
     } else if (value === "K" || value === "Q" || value === "J") {
-      total += 10;
+      total = total + 10;
     } else {
       total = total + parseInt(value);
     }
   });
+  while (total > 21 && aces > 0) {
+    total = total - 10;
+    aces = aces - 1;
+  }
   return total;
 };
 
@@ -312,25 +321,25 @@ const handleDeal = () => {
 
   const card1 = drawRandomCard();
   if (card1) {
-    playerHand.push(card1);
+    playerCards.push(card1);
   }
   const card2 = drawRandomCard();
   if (card2) {
-    playerHand.push(card2);
+    playerCards.push(card2);
   }
-  playerTotal = getHandTotal(playerHand);
+
+  playerTotal = getHandTotal(playerCards);
   console.log("[TOTAL] Player hand total:", playerTotal);
 
-  //dealer Deal
   const card3 = drawRandomCard();
   if (card3) {
-    dealerHand.push(card3);
+    dealerCards.push(card3);
   }
   const card4 = drawRandomCard();
   if (card4) {
-    dealerHand.push(card4);
+    dealerCards.push(card4);
   }
-  dealerTotal = getHandTotal(dealerHand);
+  dealerTotal = getHandTotal(dealerCards);
   hitBtn.disabled = false;
   dealBtn.disabled = true;
   standBtn.disabled = false;
@@ -344,9 +353,9 @@ const handleDealerTurn = () => {
   while (dealerTotal < 17) {
     const card = drawRandomCard();
     if (card) {
-      dealerHand.push(card);
+      dealerCards.push(card);
     }
-    dealerTotal = getHandTotal(dealerHand);
+    dealerTotal = getHandTotal(dealerCards);
   }
   const bustDealers = checkBust(dealerTotal);
   if (bustDealers) {
@@ -362,9 +371,9 @@ const handleHit = () => {
   if (outcome !== "playing") return;
   const card = drawRandomCard();
   if (card) {
-    playerHand.push(card);
+    playerCards.push(card);
   }
-  playerTotal = getHandTotal(playerHand);
+  playerTotal = getHandTotal(playerCards);
   const bustPlayers = checkBust(playerTotal);
   if (bustPlayers) {
     outcome = "dealer win";
