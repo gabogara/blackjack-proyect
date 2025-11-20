@@ -11,19 +11,29 @@
   </head>
   <body>
     <div class="container">
-      <h1>BLACKJACK</h1>
+      <div class="header-container">
+        <h1>BLACKJACK</h1>
+        <div class="bankroll-compact">
+          <div>💰 <span id="bankroll">$0</span></div>
+          <div>🎲 <span id="current-bet">$0</span></div>
+        </div>
+      </div>
 
       <div id="message">Press DEAL to start</div>
 
       <div class="dealer-section">
-        <h2>Dealer</h2>
-        <div id="dealer-total">Total: 0</div>
+        <div class="section-header">
+          <h2>Dealer</h2>
+          <div id="dealer-total">Total: 0</div>
+        </div>
         <div id="dealer-hand"></div>
       </div>
 
       <div class="player-section">
-        <h2>Player</h2>
-        <div id="player-total">Total: 0</div>
+        <div class="section-header">
+          <h2>Player</h2>
+          <div id="player-total">Total: 0</div>
+        </div>
         <div id="player-hand"></div>
       </div>
 

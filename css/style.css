@@ -5,17 +5,29 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   font-family: "Montserrat", system-ui, sans-serif;
   background-color: #0d5c0d;
   color: white;
-  padding: 20px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .container {
   width: 100%;
   max-width: 1000px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
   border-radius: 24px;
   padding: 24px 24px 28px;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6), 0 0 0 3px rgba(0, 0, 0, 0.5),
@@ -23,39 +35,63 @@ body {
   border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
 h1 {
   font-family: "Cinzel Decorative", cursive;
   letter-spacing: 3px;
-  text-align: center;
-  margin-bottom: 30px;
   color: #ffd700;
   font-size: 32px;
   text-shadow: 0 0 8px rgba(0, 0, 0, 0.7), 0 0 12px rgba(19, 19, 19, 0.5);
+  margin: 0;
+}
+
+.bankroll-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: right;
+  font-size: 16px;
+  color: #ffd700;
+  font-weight: bold;
+  /* visibility: hidden;  */
+}
+
+.bankroll-compact span {
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
 }
 
 .dealer-section,
 .player-section {
   background-color: rgba(0, 0, 0, 0.3);
-  padding: 20px;
+  padding: 16px;
   border-radius: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 10px;
 }
 
-.dealer-section h2,
-.player-section h2 {
-  margin: 0px;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.section-header h2 {
+  margin: 0;
   color: #ffd700;
 }
 
-#dealer-total,
-#player-total {
-  font-size: 24px;
+.section-header #dealer-total,
+.section-header #player-total {
+  font-size: 20px;
   font-weight: bold;
-  /* margin-bottom: 10px; */
 }
 
 #dealer-hand,
@@ -85,7 +121,6 @@ h1 {
   font-size: 24px;
   font-weight: bold;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-  gap: 10px;
 }
 
 .card.red {
@@ -95,10 +130,10 @@ h1 {
 #message {
   text-align: center;
   font-size: 20px;
-  padding: 15px;
+  padding: 12px;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   min-height: 50px;
   display: flex;
   align-items: center;
@@ -110,6 +145,7 @@ h1 {
   gap: 15px;
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 
 button {
@@ -166,7 +202,7 @@ button:disabled {
 
 .deck-info {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 8px;
   font-size: 14px;
   color: #ccc;
 }
@@ -199,6 +235,7 @@ button:disabled {
   color: #4caf50;
   text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
 }
+
 #message.push {
   font-size: 32px;
   animation: pulse 1s ease-in-out infinite;
@@ -220,48 +257,53 @@ button:disabled {
 }
 
 @media (max-width: 768px) {
-  .dealer-section,
-  .player-section {
-    margin-bottom: 20px;
-    padding: 15px;
+  .header-container {
+    flex-direction: column;
+    gap: 15px;
   }
+
+  .bankroll-compact {
+    flex-direction: row;
+    gap: 20px;
+  }
+
   h1 {
-    margin-bottom: 15px;
-    font-size: 20px;
+    font-size: 24px;
   }
 
   #dealer-hand,
   #player-hand {
     gap: 7px;
     padding: 10px;
+    min-height: 150px;
   }
 
-  .dealer-section h2,
-  .player-section h2 {
+  .section-header h2 {
     font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 0px;
   }
 
-  #dealer-total,
-  #player-total {
-    font-size: 20px;
-    font-weight: bold;
+  .section-header #dealer-total,
+  .section-header #player-total {
+    font-size: 18px;
   }
 }
 
 @media (max-width: 480px) {
   body {
-    padding: 10px;
+    align-items: flex-start;
+  }
+
+  .container {
+    margin: 10px;
+    padding: 16px;
   }
 
   h1 {
-    margin-bottom: 15px;
-    font-size: 16px;
+    font-size: 18px;
   }
 
   #message {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     font-size: 16px;
     padding: 10px;
   }
@@ -271,13 +313,13 @@ button:disabled {
   }
 
   button {
-    padding: 12px 20px;
-    font-size: 16px;
+    padding: 10px 18px;
+    font-size: 14px;
   }
 
   .dealer-section,
   .player-section {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     padding: 10px;
   }
 

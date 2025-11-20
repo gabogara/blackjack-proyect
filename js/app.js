@@ -298,11 +298,13 @@ const updateMessage = () => {
     return;
   } else if (outcome === "DoubleBJ") {
     messageEl.classList.add("DoubleBJ");
+    return;
   } else if (outcome === "player blackjack") {
     messageEl.classList.add("playerblackjack");
     return;
   } else if (outcome === "dealer blackjack") {
     messageEl.classList.add("dealerblackjack");
+    return;
   }
 };
 
