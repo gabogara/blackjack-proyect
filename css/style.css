@@ -47,7 +47,6 @@ h1 {
 #player-total {
   font-size: 24px;
   font-weight: bold;
-  /* margin-bottom: 10px; */
 }
 
 #dealer-hand,
@@ -108,5 +107,138 @@ button {
   padding: 15px 30px;
   font-size: 18px;
   font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
 
+#btn-deal {
+  background-color: #4caf50;
+  color: white;
+}
+
+#btn-deal:hover {
+  background-color: #45a049;
+}
+
+#btn-hit {
+  background-color: #2196f3;
+  color: white;
+}
+
+#btn-hit:hover {
+  background-color: #0b7dda;
+}
+
+#btn-stand {
+  background-color: #ff9800;
+  color: white;
+}
+
+#btn-stand:hover {
+  background-color: #e68900;
+}
+
+#btn-reset {
+  background-color: #f44336;
+  color: white;
+}
+
+#btn-reset:hover {
+  background-color: #da190b;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.deck-info {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+#deck-total {
+  font-weight: bold;
+  color: #ffd700;
+}
+
+@media (max-width: 768px) {
+  .dealer-section,
+  .player-section {
+    margin-bottom: 20px;
+    padding: 15px;
+  }
+  h1 {
+    margin-bottom: 15px;
+    font-size: 20px;
+  }
+
+  #dealer-hand,
+  #player-hand {
+    gap: 7px;
+    padding: 10px;
+  }
+
+  .dealer-section h2,
+  .player-section h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 0px;
+  }
+
+  #dealer-total,
+  #player-total {
+    font-size: 20px;
+    font-weight: bold;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+
+  #message {
+    margin-bottom: 15px;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .controls {
+    gap: 10px;
+  }
+
+  button {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  .dealer-section,
+  .player-section {
+    margin-bottom: 15px;
+    padding: 10px;
+  }
+
+  #dealer-hand,
+  #player-hand {
+    gap: 6px;
+    padding: 10px;
+    min-height: 140px;
+  }
+
+  .card {
+    width: 70px;
+    height: 105px;
+    font-size: 20px;
+  }
 }
