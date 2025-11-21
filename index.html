@@ -42,11 +42,28 @@
         <button id="btn-hit" disabled>Hit</button>
         <button id="btn-stand" disabled>Stand</button>
         <button id="btn-reset">Reset</button>
+        <button id="btn-music">🔊</button>
+        <button id="btn-rules">Rules</button>
       </div>
 
       <div class="deck-info">
         Cards remaining: <span id="deck-total">52</span>
       </div>
-    </div>
+
+      <div id="rules-modal" class="modal hidden">
+        <div class="modal-content">
+          <button id="btn-close-rules" class="modal-close">x</button>
+          <h2>Blackjack Rules</h2>
+          <ul>
+            <li>Try to get as close to 21 as possible without going over.</li>
+            <li>Number cards are worth their number.</li>
+            <li>J, Q, K are worth 10.</li>
+            <li>Aces are worth 1 or 11.</li>
+            <li>The dealer must hit until reaching 17 or more.</li>
+            <li>Blackjack = 21 with the first two cards.</li>
+          </ul>
+        </div>
+      </div>
+
   </body>
 </html>

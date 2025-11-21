@@ -25,11 +25,14 @@ body {
 .container {
   width: 100%;
   max-width: 1000px;
+
   display: flex;
   flex-direction: column;
+
   margin: 0 20px;
   border-radius: 24px;
   padding: 24px 24px 28px;
+
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6), 0 0 0 3px rgba(0, 0, 0, 0.5),
     0 0 0 10px #3b2812;
   border: 1px solid rgba(255, 215, 0, 0.3);
@@ -148,6 +151,61 @@ h1 {
   margin-bottom: 8px;
 }
 
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: #1b1b1b;
+  border-radius: 12px;
+  padding: 24px 28px;
+  max-width: 400px;
+  width: 90%;
+  border: 2px solid #ffd700;
+  color: #fff;
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #ffd700;
+}
+
+.modal-content ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.modal-content li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: #ffd700;
+  padding: 4px 8px;
+}
+
 button {
   padding: 15px 30px;
   font-size: 18px;
@@ -204,6 +262,37 @@ button:disabled {
   cursor: not-allowed;
 }
 
+#btn-music {
+  background-color: #ffd700;
+  color: #0d5c0d;
+  border: 2px solid #ffed4e;
+  text-shadow: none;
+}
+
+#btn-music:hover {
+  background-color: #ffed4e;
+  transform: scale(1.05);
+}
+
+#btn-music.muted {
+  background-color: #666;
+  color: white;
+  border-color: #444;
+  opacity: 0.8;
+}
+
+#btn-rules {
+  background-color: #ffffff;
+  color: #0d5c0d;
+  border: 2px solid #e0e0e0;
+  text-shadow: none;
+}
+
+#btn-rules:hover {
+  background-color: #f5f5f5;
+  transform: scale(1.05);
+}
+
 .deck-info {
   text-align: center;
   margin-top: 8px;
@@ -222,7 +311,7 @@ button:disabled {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.12);
+    transform: scale(1.05);
   }
 }
 
@@ -245,7 +334,6 @@ button:disabled {
   font-weight: 900;
   animation: gameOverPulse 1s ease-in-out infinite;
   color: #ff1744;
-  border: 3px solid #8b0000;
   text-shadow: 0 0 10px rgba(255, 23, 68, 0.8);
 }
 
@@ -365,5 +453,11 @@ button:disabled {
     width: 70px;
     height: 105px;
     font-size: 20px;
+  }
+
+  #btn-music,
+  #btn-rules {
+    padding: 10px 15px;
+    font-size: 14px;
   }
 }

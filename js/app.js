@@ -29,6 +29,7 @@ let playerTotal = 0;
 let dealerTotal = 0;
 let coins = 0;
 let bet = 0;
+
 // 'player', 'dealer' or 'none'
 let turn = "none";
 
@@ -40,9 +41,11 @@ let blackjackDealer = false;
 
 let message = textMessage.start;
 let lastOutcomeWithSound = null;
+let isMusicMuted = false;
 // Game Bg music
 bgMusic.loop = true;
-bgMusic.volume = 0.2;
+bgMusic.volume = 0.1;
+
 /*------------------------ cached element references ------------------------*/
 
 const deckTotalEl = document.getElementById("deck-total");
@@ -59,6 +62,11 @@ const dealBtn = document.getElementById("btn-deal");
 const hitBtn = document.getElementById("btn-hit");
 const standBtn = document.getElementById("btn-stand");
 const resetBtn = document.getElementById("btn-reset");
+
+const musicBtn = document.getElementById("btn-music");
+const rulesBtn = document.getElementById("btn-rules");
+const rulesModal = document.getElementById("rules-modal");
+const closeRulesBtn = document.getElementById("btn-close-rules");
 
 /*----------------------------- event listeners -----------------------------*/
 
@@ -82,6 +90,21 @@ standBtn.addEventListener("click", (event) => {
 resetBtn.addEventListener("click", (event) => {
   console.log("Reset button clicked:", event);
   init();
+});
+
+// Music toggle
+musicBtn.addEventListener("click", () => {
+  toggleMusic();
+});
+
+// Show rules (open modal)
+rulesBtn.addEventListener("click", () => {
+  rulesModal.classList.remove("hidden");
+});
+
+// Close modal (X button)
+closeRulesBtn.addEventListener("click", () => {
+  rulesModal.classList.add("hidden");
 });
 
 /*-------------------------------- functions --------------------------------*/
@@ -158,12 +181,33 @@ const init = () => {
   render();
 };
 
+const toggleMusic = () => {
+  if (isMusicMuted === true) {
+    isMusicMuted = false;
+  } else {
+    isMusicMuted = true;
+  }
+
+  if (isMusicMuted) {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    musicBtn.textContent = "🔇";
+  } else {
+    musicBtn.textContent = "🔊";
+    playMusicBg();
+  }
+};
+
 const playMusicBg = () => {
+  if (isMusicMuted) return;
+
   bgMusic.currentTime = 0;
   bgMusic.play();
 };
 
 const manageMusic = () => {
+  if (isMusicMuted) return;
+
   if (outcome === lastOutcomeWithSound) return;
 
   deleteEfectMusic();
@@ -181,6 +225,7 @@ const manageMusic = () => {
     gameOverSound.currentTime = 0;
     gameOverSound.play();
   }
+
   lastOutcomeWithSound = outcome;
 };
 
