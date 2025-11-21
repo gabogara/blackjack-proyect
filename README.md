@@ -149,3 +149,7 @@ Audio assets:
 
 - Game sound effects from [Mixkit](https://mixkit.co/free-sound-effects/).
 - Background music by [Pixabay](https://pixabay.com/users/backgroundmusicforvideos-46459014/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=249670).
+
+Icons:
+
+- Card / game symbols from [PiliApp Facebook Symbols](https://es.piliapp.com/facebook-symbols/).
