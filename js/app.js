@@ -246,7 +246,7 @@ const stopMusic = () => {
 };
 
 const startBetting = () => {
-  coins = 100;
+  coins = 40;
   bet = 10;
 };
 
