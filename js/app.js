@@ -72,23 +72,23 @@ const closeRulesBtn = document.getElementById("btn-close-rules");
 
 // Deal
 dealBtn.addEventListener("click", (event) => {
-  console.log("Deal button clicked:", event);
+  // console.log("Deal button clicked:", event);
   handleDeal();
 });
 // Hit
 hitBtn.addEventListener("click", (event) => {
-  console.log("hit button clicked:", event);
+  // console.log("hit button clicked:", event);
   handleHit();
 });
 // stand
 standBtn.addEventListener("click", (event) => {
-  console.log("Stand button clicked:", event);
+  // console.log("Stand button clicked:", event);
   handleStand();
 });
 
 // Reset
 resetBtn.addEventListener("click", (event) => {
-  console.log("Reset button clicked:", event);
+  // console.log("Reset button clicked:", event);
   init();
 });
 
@@ -485,7 +485,7 @@ const drawRandomCard = () => {
   }
   const randomIdx = Math.floor(Math.random() * deckCards.length);
   const cardPicked = deckCards.splice(randomIdx, 1)[0];
-  console.log("[DRAW] Card picked:", cardPicked);
+  // console.log("[DRAW] Card picked:", cardPicked);
   return cardPicked;
 };
 
@@ -549,7 +549,7 @@ const handleDeal = () => {
   }
 
   playerTotal = getHandTotal(playerCards);
-  console.log("[TOTAL] Player hand total:", playerTotal);
+  // console.log("[TOTAL] Player hand total:", playerTotal);
   blackjackPlayer = checkBlackJack(playerCards);
 
   const card3 = drawRandomCard();
