@@ -13,6 +13,13 @@ const textMessage = {
   playerBlackjack: "🃏 Blackjack! You win. 🃏",
   gameOver: "Game Over! You're broke. Press RESET to play again.",
 };
+const bgMusic = new Audio("./audio/jazzM-background.mp3");
+const winSound = new Audio("./audio/mixkit-achievement-bell-600.wav");
+const loseSound = new Audio("./audio/mixkit-losing-bleeps-2026.wav");
+const blackjackSound = new Audio("./audio/mixkit-video-game-win-2016.wav");
+const gameOverSound = new Audio(
+  "./audio/mixkit-player-losing-or-failing-2042.wav"
+);
 
 /*-------------------------------- variables --------------------------------*/
 let deckCards = [];
@@ -32,7 +39,10 @@ let blackjackPlayer = false;
 let blackjackDealer = false;
 
 let message = textMessage.start;
-
+let lastOutcomeWithSound = null;
+// Game Bg music
+bgMusic.loop = true;
+bgMusic.volume = 0.2;
 /*------------------------ cached element references ------------------------*/
 
 const deckTotalEl = document.getElementById("deck-total");
@@ -132,6 +142,7 @@ const init = () => {
   ];
   blackjackPlayer = false;
   blackjackDealer = false;
+  lastOutcomeWithSound = null;
   playerCards = [];
   dealerCards = [];
   playerTotal = 0;
@@ -145,6 +156,48 @@ const init = () => {
   startBetting();
   deleteMessage();
   render();
+};
+
+const playMusicBg = () => {
+  bgMusic.currentTime = 0;
+  bgMusic.play();
+};
+
+const manageMusic = () => {
+  if (outcome === lastOutcomeWithSound) return;
+
+  deleteEfectMusic();
+
+  if (outcome === "player win") {
+    winSound.currentTime = 0;
+    winSound.play();
+  } else if (outcome === "dealer win") {
+    loseSound.currentTime = 0;
+    loseSound.play();
+  } else if (outcome === "player blackjack") {
+    blackjackSound.currentTime = 0;
+    blackjackSound.play();
+  } else if (outcome === "game over") {
+    gameOverSound.currentTime = 0;
+    gameOverSound.play();
+  }
+  lastOutcomeWithSound = outcome;
+};
+
+const deleteEfectMusic = () => {
+  winSound.pause();
+  winSound.currentTime = 0;
+  loseSound.pause();
+  loseSound.currentTime = 0;
+  blackjackSound.pause();
+  blackjackSound.currentTime = 0;
+  gameOverSound.pause();
+  gameOverSound.currentTime = 0;
+};
+
+const stopMusic = () => {
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
 };
 
 const startBetting = () => {
@@ -238,16 +291,19 @@ const checkWinner = () => {
     message = textMessage.playerWins;
     updateMessage();
     calcBetting();
+    manageMusic();
   } else if (dealerTotal > playerTotal) {
     outcome = "dealer win";
     message = textMessage.dealerWins;
     updateMessage();
     calcBetting();
+    manageMusic();
   } else {
     outcome = "push";
     message = textMessage.push;
     updateMessage();
     calcBetting();
+    manageMusic();
   }
 };
 
@@ -258,6 +314,7 @@ const gameOver = () => {
   dealBtn.disabled = true;
   resetBtn.disabled = false;
   updateMessage();
+  stopMusic();
   return;
 };
 
@@ -278,6 +335,7 @@ const reStartDeck = () => {
   dealerTotal = 0;
   blackjackPlayer = false;
   blackjackDealer = false;
+  lastOutcomeWithSound = null;
   deleteMessage();
   deckCards = [
     "dA",
@@ -425,8 +483,12 @@ const handleDeal = () => {
   if (outcome !== "idle") return;
   if (coins <= 0) {
     gameOver();
+    outcome = "game over";
+    manageMusic();
     return;
   }
+  playMusicBg();
+  deleteEfectMusic();
   reStartDeck();
   turn = "player";
   outcome = "playing";
@@ -461,12 +523,14 @@ const handleDeal = () => {
       message = textMessage.pushBlackJack;
       updateMessage();
       calcBetting();
+      manageMusic();
       endRound();
     } else {
       outcome = "dealer blackjack";
       message = textMessage.dealerBlackjack;
       updateMessage();
       calcBetting();
+      manageMusic();
       endRound();
     }
   } else if (blackjackPlayer) {
@@ -474,6 +538,7 @@ const handleDeal = () => {
     outcome = "player blackjack";
     updateMessage();
     calcBetting();
+    manageMusic();
     endRound();
   }
   if (!blackjackDealer && !blackjackPlayer) {
@@ -500,6 +565,7 @@ const handleDealerTurn = () => {
     message = textMessage.bustDealer;
     updateMessage();
     calcBetting();
+    manageMusic();
   } else {
     checkWinner();
   }
@@ -519,6 +585,7 @@ const handleHit = () => {
     message = textMessage.bustPlayer;
     updateMessage();
     calcBetting();
+    manageMusic();
     endRound();
   } else {
     message = textMessage.playerTurn;

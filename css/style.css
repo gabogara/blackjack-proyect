@@ -59,7 +59,6 @@ h1 {
   font-size: 16px;
   color: #ffd700;
   font-weight: bold;
-  /* visibility: hidden; */
 }
 
 #bankroll-compact span {
@@ -158,6 +157,10 @@ button {
   cursor: pointer;
   transition: all 0.3s;
   text-transform: uppercase;
+}
+
+button:focus {
+  outline: none;
 }
 
 #btn-deal {
