@@ -11,6 +11,7 @@ const textMessage = {
   pushBlackJack: "Push. Both have blackjack.",
   dealerBlackjack: "🃏 Dealer has blackjack. You lose! 🃏",
   playerBlackjack: "🃏 Blackjack! You win. 🃏",
+  gameOver: "Game Over! You're broke. Press RESET to play again.",
 };
 
 /*-------------------------------- variables --------------------------------*/
@@ -19,7 +20,8 @@ let playerCards = [];
 let dealerCards = [];
 let playerTotal = 0;
 let dealerTotal = 0;
-
+let coins = 0;
+let bet = 0;
 // 'player', 'dealer' or 'none'
 let turn = "none";
 
@@ -40,6 +42,8 @@ const messageEl = document.getElementById("message");
 
 const playerHandEl = document.getElementById("player-hand");
 const dealerHandEl = document.getElementById("dealer-hand");
+const coinEl = document.getElementById("bankroll");
+const betEl = document.getElementById("current-bet");
 
 const dealBtn = document.getElementById("btn-deal");
 const hitBtn = document.getElementById("btn-hit");
@@ -138,7 +142,40 @@ const init = () => {
   dealBtn.disabled = false;
   hitBtn.disabled = true;
   standBtn.disabled = true;
+  startBetting();
   deleteMessage();
+  render();
+};
+
+const startBetting = () => {
+  coins = 100;
+  bet = 10;
+};
+
+// 'idle', 'playing', 'player win', 'dealer win', 'push', 'bust', "DoubleBJ"
+const calcBetting = () => {
+  if (
+    outcome === "idle" ||
+    outcome === "playing" ||
+    outcome === "push" ||
+    outcome === "DoubleBJ"
+  ) {
+    return;
+  }
+
+  if (outcome === "dealer win" || outcome === "dealer blackjack") {
+    coins = coins - bet;
+  } else if (outcome === "player win") {
+    coins = coins + bet;
+  } else if (outcome === "player blackjack") {
+    coins = coins + Math.floor(bet * 1.5);
+  }
+
+  if (coins <= 0) {
+    coins = 0;
+    outcome = "game over";
+    gameOver();
+  }
   render();
 };
 
@@ -146,6 +183,8 @@ const render = () => {
   messageEl.textContent = message;
   deckTotalEl.textContent = deckCards.length;
   playerTotalEl.textContent = `Total: ${playerTotal}`;
+  coinEl.textContent = `${coins}`;
+  betEl.textContent = `${bet}`;
 
   playerHandEl.innerHTML = "";
   playerCards.forEach((card) => {
@@ -198,18 +237,32 @@ const checkWinner = () => {
     outcome = "player win";
     message = textMessage.playerWins;
     updateMessage();
+    calcBetting();
   } else if (dealerTotal > playerTotal) {
     outcome = "dealer win";
     message = textMessage.dealerWins;
     updateMessage();
+    calcBetting();
   } else {
     outcome = "push";
     message = textMessage.push;
     updateMessage();
+    calcBetting();
   }
 };
 
+const gameOver = () => {
+  message = textMessage.gameOver;
+  hitBtn.disabled = true;
+  standBtn.disabled = true;
+  dealBtn.disabled = true;
+  resetBtn.disabled = false;
+  updateMessage();
+  return;
+};
+
 const endRound = () => {
+  if (outcome === "game over") return;
   turn = "none";
   hitBtn.disabled = true;
   standBtn.disabled = true;
@@ -305,6 +358,9 @@ const updateMessage = () => {
   } else if (outcome === "dealer blackjack") {
     messageEl.classList.add("dealerblackjack");
     return;
+  } else if (outcome === "game over") {
+    messageEl.classList.add("gameOver");
+    return;
   }
 };
 
@@ -316,6 +372,7 @@ const deleteMessage = () => {
   messageEl.classList.remove("DoubleBJ");
   messageEl.classList.remove("playerblackjack");
   messageEl.classList.remove("dealerblackjack");
+  messageEl.classList.remove("gameOver");
 };
 
 const drawRandomCard = () => {
@@ -366,6 +423,10 @@ const handleStand = () => {
 
 const handleDeal = () => {
   if (outcome !== "idle") return;
+  if (coins <= 0) {
+    gameOver();
+    return;
+  }
   reStartDeck();
   turn = "player";
   outcome = "playing";
@@ -399,17 +460,20 @@ const handleDeal = () => {
       outcome = "DoubleBJ";
       message = textMessage.pushBlackJack;
       updateMessage();
+      calcBetting();
       endRound();
     } else {
       outcome = "dealer blackjack";
       message = textMessage.dealerBlackjack;
       updateMessage();
+      calcBetting();
       endRound();
     }
   } else if (blackjackPlayer) {
     message = textMessage.playerBlackjack;
     outcome = "player blackjack";
     updateMessage();
+    calcBetting();
     endRound();
   }
   if (!blackjackDealer && !blackjackPlayer) {
@@ -435,6 +499,7 @@ const handleDealerTurn = () => {
     outcome = "player win";
     message = textMessage.bustDealer;
     updateMessage();
+    calcBetting();
   } else {
     checkWinner();
   }
@@ -453,6 +518,7 @@ const handleHit = () => {
     outcome = "dealer win";
     message = textMessage.bustPlayer;
     updateMessage();
+    calcBetting();
     endRound();
   } else {
     message = textMessage.playerTurn;

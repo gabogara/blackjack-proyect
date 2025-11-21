@@ -51,7 +51,7 @@ h1 {
   margin: 0;
 }
 
-.bankroll-compact {
+#bankroll-compact {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -59,10 +59,10 @@ h1 {
   font-size: 16px;
   color: #ffd700;
   font-weight: bold;
-  /* visibility: hidden;  */
+  /* visibility: hidden; */
 }
 
-.bankroll-compact span {
+#bankroll-compact span {
   text-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
 }
 
@@ -72,6 +72,7 @@ h1 {
   padding: 16px;
   border-radius: 10px;
   margin-bottom: 20px;
+
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -236,6 +237,33 @@ button:disabled {
   text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
 }
 
+#message.gameOver {
+  font-size: 32px;
+  font-weight: 900;
+  animation: gameOverPulse 1s ease-in-out infinite;
+  color: #ff1744;
+  border: 3px solid #8b0000;
+  text-shadow: 0 0 10px rgba(255, 23, 68, 0.8);
+}
+
+@keyframes gameOverPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  75% {
+    transform: scale(1.05);
+  }
+}
+
 #message.push {
   font-size: 32px;
   animation: pulse 1s ease-in-out infinite;
@@ -262,7 +290,7 @@ button:disabled {
     gap: 15px;
   }
 
-  .bankroll-compact {
+  #bankroll-compact {
     flex-direction: row;
     gap: 20px;
   }
