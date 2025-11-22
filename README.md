@@ -4,8 +4,9 @@
 
 A simple **Blackjack** game built with **HTML, CSS, and JavaScript** as part of my General Assembly coursework.
 
-The player plays against the dealer, can **hit** or **stand**, and manages a small **bankroll** with fixed bets. The UI simulates a casino table with animated messages and sound effects for wins, losses, blackjack and game over.
+The player plays against the dealer, can **hit** or **stand**, and manages a small **bankroll** with fixed bets. The UI simulates a casino table with animated messages and sound effects for wins, losses, blackjack and game over. 
 
+> This game is deployed at: [Play Live Demo Here](https://gabogara.github.io/blackjack-proyect/)
 ---
 
 ## Features
@@ -153,3 +154,8 @@ Audio assets:
 Icons:
 
 - Card / game symbols from [PiliApp Facebook Symbols](https://es.piliapp.com/facebook-symbols/).
+
+Fonts:
+
+- [Cinzel Decorative](https://fonts.google.com/specimen/Cinzel+Decorative) – from [Google Fonts](https://fonts.google.com/)
+- [Montserrat](https://fonts.google.com/specimen/Montserrat) – from [Google Fonts](https://fonts.google.com/)
