@@ -74,8 +74,8 @@ The player plays against the dealer, can **hit** or **stand**, and manages a sma
 ### 1. Clone this repository:
 
 ```bash
-git clone <https://github.com/gabogara/blackjack-proyect>
-cd <blackjack-proyect>
+git clone https://github.com/gabogara/blackjack-proyect
+cd blackjack-proyect
 ```
 
 ### 2. Open the project in your browser
